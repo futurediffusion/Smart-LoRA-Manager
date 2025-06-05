@@ -116,3 +116,41 @@ class SmartLoRASelector:
                     break
 
         return ("\n".join(weights),)
+
+
+class LoRAWeightSlider:
+    """Aplica un peso personalizado a los LoRAs seleccionados."""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "weights": ("STRING", {}),
+                "weight": (
+                    "FLOAT",
+                    {
+                        "default": 1.0,
+                        "min": 0.0,
+                        "max": 2.0,
+                        "step": 0.05,
+                    },
+                ),
+            }
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("weights",)
+    FUNCTION = "apply"
+    CATEGORY = "SmartLoRA"
+
+    def apply(self, weights: str, weight: float):
+        result = []
+        for line in weights.splitlines():
+            if not line:
+                continue
+            if ":" in line:
+                path, _ = line.split(":", 1)
+            else:
+                path = line
+            result.append(f"{path}:{weight}")
+        return ("\n".join(result),)
