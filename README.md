@@ -26,7 +26,7 @@ Si tienes sugerencias o quieres colaborar, ¡eres bienvenido!
 - `smart_lora_manager/__init__.py` registra los nodos para ComfyUI.
 - `smart_lora_manager/lora_manager.py` contiene la implementación básica de los nodos.
 
-Estos nodos son un punto de partida para gestionar múltiples LoRAs de forma sencilla. El de **Load LoRAs** busca archivos `.safetensors` o `.ckpt` en un directorio y los devuelve como una lista de rutas. **Smart LoRA Selector** activa automáticamente aquellos LoRAs mencionados en el prompt.
+Estos nodos son un punto de partida para gestionar múltiples LoRAs de forma sencilla. El de **Load LoRAs** busca archivos `.safetensors` o `.ckpt` en un directorio y los devuelve como una lista de rutas. **Smart LoRA Selector** detecta palabras clave o sinónimos en el prompt para activar automáticamente los modelos correspondientes. El diccionario de sinónimos se define en `smart_lora_manager/synonyms.yaml` y puede modificarse a gusto.
 
 ## Uso de categorías
 
