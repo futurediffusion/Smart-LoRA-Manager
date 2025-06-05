@@ -27,3 +27,9 @@ Si tienes sugerencias o quieres colaborar, ¡eres bienvenido!
 - `smart_lora_manager/lora_manager.py` contiene la implementación básica de los nodos.
 
 Estos nodos son un punto de partida para gestionar múltiples LoRAs de forma sencilla. El de **Load LoRAs** busca archivos `.safetensors` o `.ckpt` en un directorio y los devuelve como una lista de rutas. **Smart LoRA Selector** activa automáticamente aquellos LoRAs mencionados en el prompt.
+
+## Uso de categorías
+
+Cada LoRA puede incluir un campo `category` en sus metadatos. `Load LoRAs` lee esa información (desde el propio archivo `.safetensors` o un JSON con el mismo nombre) y devuelve un mapeo en formato JSON donde la clave es la ruta del archivo y el valor su categoría. Esto permite agrupar modelos por personaje, estilo u otra clasificación que desees.
+
+Si un archivo no tiene categoría definida, simplemente se deja vacío. Los nodos futuros podrán aprovechar este dato para filtrar o mostrar los LoRAs de forma ordenada.
