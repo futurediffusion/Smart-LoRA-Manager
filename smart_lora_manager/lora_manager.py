@@ -1,7 +1,10 @@
 import os
 from dataclasses import dataclass
 import json
-from typing import Dict, Optional
+import re
+from typing import Dict, Optional, List
+
+import yaml
 
 try:
     from safetensors.torch import safe_open
@@ -63,7 +66,8 @@ class LoadLoRAs:
 
 
 class SmartLoRASelector:
-    """Selecciona LoRAs en base a palabras clave en el prompt."""
+    """Selecciona LoRAs en base a palabras clave o sinónimos en el prompt,
+    utilizando límites de palabra para evitar coincidencias parciales."""
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -79,8 +83,25 @@ class SmartLoRASelector:
     FUNCTION = "select"
     CATEGORY = "SmartLoRA"
 
+    def _load_synonyms(self) -> Dict[str, List[str]]:
+        """Carga el diccionario de sinónimos desde 'synonyms.yaml'."""
+        path = os.path.join(os.path.dirname(__file__), "synonyms.yaml")
+        synonyms: Dict[str, List[str]] = {}
+        if os.path.isfile(path):
+            try:
+                with open(path, "r", encoding="utf-8") as fh:
+                    data = yaml.safe_load(fh) or {}
+                    if isinstance(data, dict):
+                        for key, value in data.items():
+                            if isinstance(value, list):
+                                synonyms[key.lower()] = [str(v).lower() for v in value]
+            except Exception:
+                pass
+        return synonyms
+
     def select(self, loras, prompt):
         weights = []
+        synonyms = self._load_synonyms()
         try:
             mapping: Dict[str, Optional[str]] = json.loads(loras)
         except json.JSONDecodeError:
@@ -88,7 +109,10 @@ class SmartLoRASelector:
 
         for path in mapping.keys():
             name = os.path.splitext(os.path.basename(path))[0].lower()
-            if name in prompt.lower():
-                weights.append(f"{path}:1.0")
+            patterns = [name] + synonyms.get(name, [])
+            for term in patterns:
+                if re.search(rf"\b{re.escape(term)}\b", prompt, re.IGNORECASE):
+                    weights.append(f"{path}:1.0")
+                    break
 
         return ("\n".join(weights),)
