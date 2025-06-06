@@ -51,7 +51,7 @@ Connecting that string to the node and choosing a path generates `preset.json`. 
 
 ## Running tests
 
-To run the unit test suite make sure `pytest` is installed and then execute:
+To run the unit test suite make sure `pytest` is installed and run it from the repository root:
 
 ```bash
 pytest

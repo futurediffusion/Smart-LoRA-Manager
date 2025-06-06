@@ -3,7 +3,15 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 import json
 import os
 
-from smart_lora_manager.lora_manager import LoadLoRAs, SmartLoRASelector, LoRAMetadata
+from smart_lora_manager.lora_manager import (
+    LoadLoRAs,
+    SmartLoRASelector,
+    LoRAMetadata,
+    LoRAWeightSlider,
+    SaveLoRAPreset,
+    LoadLoRAPreset,
+)
+from smart_lora_manager import preset_manager
 
 
 def test_load_loras_load(tmp_path, monkeypatch):
@@ -49,3 +57,62 @@ def test_smart_lora_selector_select(monkeypatch):
 
     result_empty, = selector.select(loras, "fighterplane approaching")
     assert result_empty == ""
+
+
+def test_lora_weight_slider_apply():
+    slider = LoRAWeightSlider()
+    weights = "a.safetensors:1.0\nb.ckpt:0.8\nc.safetensors"
+    result, = slider.apply(weights, 0.5)
+    assert result == "a.safetensors:0.5\nb.ckpt:0.5\nc.safetensors:0.5"
+
+
+def test_save_and_load_lora_preset(tmp_path, monkeypatch):
+    path = tmp_path / "preset.json"
+    weights = "a.safetensors:1.0\nb.safetensors:0.7"
+
+    calls = []
+
+    def fake_preview(self, w):
+        calls.append(w)
+
+    monkeypatch.setattr(preset_manager.PresetManager, "preview", fake_preview)
+
+    saver = SaveLoRAPreset()
+    out_path, = saver.save(weights, str(path), preview=True)
+    assert out_path == str(path)
+
+    loader = LoadLoRAPreset()
+    loaded, = loader.load(str(path), preview=True)
+
+    assert loaded == weights
+    assert calls == [weights, weights]
+
+
+def test_preset_manager_preview(monkeypatch):
+    manager = preset_manager.PresetManager("dummy")
+
+    called = {}
+
+    def fake_post(url, json):
+        called["url"] = url
+        called["json"] = json
+
+    monkeypatch.setattr(
+        preset_manager,
+        "requests",
+        type("Req", (), {"post": staticmethod(fake_post)}),
+    )
+
+    manager.preview("testweights")
+
+    assert called == {
+        "url": "http://127.0.0.1:8188/preview",
+        "json": {"weights": "testweights"},
+    }
+
+
+def test_preset_manager_preview_no_requests(monkeypatch):
+    manager = preset_manager.PresetManager("dummy")
+    monkeypatch.setattr(preset_manager, "requests", None)
+    # Should simply return without error
+    manager.preview("ignored")
