@@ -20,6 +20,7 @@ If you have suggestions or want to collaborate, you are welcome!
 
 1. Copy the `smart_lora_manager` folder inside `ComfyUI/custom_nodes/`.
 2. After restarting ComfyUI you should see the **Load LoRAs**, **Smart LoRA Selector** and **LoRA Weight Slider** nodes under the *SmartLoRA* category.
+3. Install the dependencies (PyYAML, requests and safetensors) with `pip install -r requirements.txt`.
 
 ## Plugin structure
 
