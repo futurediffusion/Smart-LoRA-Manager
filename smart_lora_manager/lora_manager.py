@@ -5,6 +5,7 @@ import re
 from typing import Dict, Optional, List
 
 import yaml
+from .preset_manager import PresetManager
 
 try:
     from safetensors.torch import safe_open
@@ -154,3 +155,55 @@ class LoRAWeightSlider:
                 path = line
             result.append(f"{path}:{weight}")
         return ("\n".join(result),)
+
+
+
+class SaveLoRAPreset:
+    """Guarda la lista de LoRAs y pesos en un archivo JSON."""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "weights": ("STRING", {}),
+                "path": ("STRING", {"default": "preset.json"}),
+                "preview": ("BOOLEAN", {"default": False}),
+            }
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("path",)
+    FUNCTION = "save"
+    CATEGORY = "SmartLoRA"
+
+    def save(self, weights: str, path: str, preview: bool = False):
+        manager = PresetManager(path)
+        manager.save(weights)
+        if preview:
+            manager.preview(weights)
+        return (path,)
+
+
+class LoadLoRAPreset:
+    """Carga un preset de LoRAs y devuelve el listado de pesos."""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "path": ("STRING", {"default": "preset.json"}),
+                "preview": ("BOOLEAN", {"default": False}),
+            }
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("weights",)
+    FUNCTION = "load"
+    CATEGORY = "SmartLoRA"
+
+    def load(self, path: str, preview: bool = False):
+        manager = PresetManager(path)
+        weights = manager.load()
+        if preview:
+            manager.preview(weights)
+        return (weights,)

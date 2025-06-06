@@ -37,3 +37,15 @@ Si un archivo no tiene categoría definida, simplemente se deja vacío. Los nodo
 ## Ajuste de pesos
 
 El nodo **LoRA Weight Slider** toma la salida de **Smart LoRA Selector** y permite modificar el peso aplicado a todos los modelos seleccionados usando un deslizador. Basta conectar la lista de pesos detectados a este nodo y escoger el valor deseado para que se reemplacen los pesos por el indicado.
+
+## Guardar y cargar presets
+
+Con **Save LoRA Preset** puedes almacenar la lista de LoRAs activos y sus pesos en un archivo JSON:
+
+```text
+weights = "path/to/lora1.safetensors:1.0\npath/to/lora2.safetensors:0.8"
+```
+
+Conectando esa cadena al nodo y eligiendo una ruta se genera `preset.json`. Luego **Load LoRA Preset** lee dicho archivo y devuelve el formato de pesos para reutilizarlo en cualquier flujo.
+
+
