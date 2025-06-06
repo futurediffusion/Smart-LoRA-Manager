@@ -54,7 +54,7 @@ Conectando esa cadena al nodo y eligiendo una ruta se genera `preset.json`. Lueg
 
 ## Ejecutar pruebas
 
-Para correr la suite de tests unitarios asegúrate de tener instalado `pytest` y luego ejecuta:
+Para correr la suite de tests unitarios asegúrate de tener instalado `pytest` y ejecútala desde la raíz del repositorio con:
 
 ```bash
 pytest
