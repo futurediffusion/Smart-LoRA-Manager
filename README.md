@@ -1,5 +1,7 @@
 # Smart LoRA Manager
 
+[English version available here](README_en.md)
+
 Smart LoRA Manager es un nodo experimental para **ComfyUI** enfocado en simplificar el trabajo con múltiples LoRAs. La idea surgió al notar lo tedioso que puede resultar ajustar manualmente los pesos de cada modelo al generar imágenes con distintos estilos o personajes.
 
 ## ¿Qué busca ofrecer?
