@@ -49,3 +49,11 @@ weights = "path/to/lora1.safetensors:1.0\npath/to/lora2.safetensors:0.8"
 Conectando esa cadena al nodo y eligiendo una ruta se genera `preset.json`. Luego **Load LoRA Preset** lee dicho archivo y devuelve el formato de pesos para reutilizarlo en cualquier flujo.
 
 
+## Ejecutar pruebas
+
+Para correr la suite de tests unitarios asegúrate de tener instalado `pytest` y luego ejecuta:
+
+```bash
+pytest
+```
+
